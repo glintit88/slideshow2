@@ -7,6 +7,9 @@ import glob
 from itertools import cycle
 from PIL import Image, ImageTk
 import time
+from tkinter.messagebox import askyesno
+
+global onoff
 
 class Slideshow(tkinter.Tk):
     """Display a slideshow from a list of filenames"""
@@ -18,12 +21,14 @@ class Slideshow(tkinter.Tk):
         """
         tkinter.Tk.__init__(self)
         self.geometry("+0+0")
+        self.iconbitmap('icon.ico')
         self.slide_interval = slide_interval
         self.images = None
         self.set_images(images)
         self.slide = tkinter.Label(self)
         self.slide.pack()
-
+        self.button1 = tkinter.Button(text="1", command=loop1)
+        self.button1.pack()
     def set_images(self, images):
          self.images = cycle(images)
 
@@ -35,7 +40,7 @@ class Slideshow(tkinter.Tk):
         size = tuple(int(_) for _ in self.geometry().split('+')[0].split('x'))
         x = w / 2 - size[0] / 2
         y = h / 2 - size[1] / 2
-        self.geometry("+%d+%d" % (100, 100))
+        self.geometry("+%d+%d" % (x, y))
 
     def set_image(self):
         """Setup image to be displayed"""
@@ -66,6 +71,15 @@ class Slideshow(tkinter.Tk):
         self.main()
         self.mainloop()
 
+def loop1():
+    answer = askyesno(title = 'Continue', message = "yes/no")
+    
+    if slide_interval == 1000:
+        slide_interval = 10000
+    else:
+        slide_interval = 1000
+        
+    print("slide_interval:" + str(slide_interval))
 
 if __name__ == "__main__":
     slide_interval = 1000
@@ -82,3 +96,4 @@ if __name__ == "__main__":
     # start the slideshow
     slideshow = Slideshow(images, slide_interval)
     slideshow.start()
+
