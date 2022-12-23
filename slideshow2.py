@@ -10,6 +10,7 @@ import time
 from tkinter.messagebox import askyesno
 
 global onoff
+global tmp
 
 class Slideshow(tkinter.Tk):
     """Display a slideshow from a list of filenames"""
@@ -21,7 +22,7 @@ class Slideshow(tkinter.Tk):
         """
         tkinter.Tk.__init__(self)
         self.geometry("+0+0")
-        self.iconbitmap('icon.ico')
+      #  self.iconbitmap('icon.ico')
         self.slide_interval = slide_interval
         self.images = None
         self.set_images(images)
@@ -40,23 +41,34 @@ class Slideshow(tkinter.Tk):
         size = tuple(int(_) for _ in self.geometry().split('+')[0].split('x'))
         x = w / 2 - size[0] / 2
         y = h / 2 - size[1] / 2
-        self.geometry("+%d+%d" % (x, y))
+        if answer:
+            self.geometry("+%d+%d" % (10, 510))
+        else:    
+            self.geometry("+%d+%d" % (1920, 10))
 
     def set_image(self):
+        global tmp
         """Setup image to be displayed"""
         #self.image_name = next(self.images)
-        print(next(self.images))
+        #print(next(self.images))
         list_of_files = glob.glob(folder_path+ file_type)
         latest_file = max(list_of_files, key=os.path.getctime)
-        print("latest_file--> "+latest_file)
+        if tmp != latest_file:
+            
+            print("latest_file--> "+latest_file)
+            print(pos)
+            tmp = latest_file
         #self.image_name =  'image/test.png'
-        self.image_name =  latest_file
-        filename, ext = os.path.splitext(self.image_name)
-        image=Image.open(self.image_name)
-        reimage = image.resize((320,200), Image.ANTIALIAS)
-       # self.image = ImageTk.PhotoImage(Image.open(self.image_name).resize(300,200), Image.ANTIALIAS)
-        #img = image.resize(320, 300)
-        self.image = ImageTk.PhotoImage(reimage)
+            self.image_name =  latest_file
+            filename, ext = os.path.splitext(self.image_name)
+            image=Image.open(self.image_name)
+            if answer:
+                 reimage = image.resize((820,450), Image.ANTIALIAS)
+            else: 
+                reimage = image.resize((1624,938), Image.ANTIALIAS)
+           # self.image = ImageTk.PhotoImage(Image.open(self.image_name).resize(300,200), Image.ANTIALIAS)
+            #img = image.resize(320, 300)
+            self.image = ImageTk.PhotoImage(reimage)
             
     def main(self):
         """Display the images"""
@@ -83,15 +95,17 @@ def loop1():
 
 if __name__ == "__main__":
     slide_interval = 1000
-
-    folder_path = os.path.join(os.path.dirname(__file__), "image")
+    answer = askyesno(title = 'Window 1?', message = "yes/no")
+    print(answer)
+    pos = 1
+    folder_path = os.path.join(os.path.dirname(__file__), "pic")
     print("folder path:: ->>> "+ folder_path)
     file_type = r'\*.jpg'
     list_of_files = glob.glob(folder_path+ file_type)
-
+    tmp = "ss"
     
 
-    images = glob.glob("image\\*.jpg")
+    images = glob.glob("pic\\*.jpg")
 
     # start the slideshow
     slideshow = Slideshow(images, slide_interval)
